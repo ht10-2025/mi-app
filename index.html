@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Para Ti 💖</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,240,246,0.9);
+}
+
+.card {
+  position: relative;
+  background: white;
+  border-radius: 30px;
+  padding: 28px;
+  width: 90%;
+  max-width: 390px;
+  text-align: center;
+  box-shadow: 0 20px 45px rgba(0,0,0,0.25);
+  z-index: 2;
+  animation: fadeUp 1.2s;
+}
+
+h2 { color: #ff5fa2; }
+p { color: #555; }
+
+input, button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+  border-radius: 18px;
+  border: none;
+  font-size: 16px;
+}
+
+input { background: #fff0f6; }
+
+button {
+  background: #ff6fa5;
+  color: white;
+  cursor: pointer;
+}
+
+button.special {
+  background: linear-gradient(135deg, #ff6fa5, #ff9ac8);
+  animation: pulse 1.4s infinite;
+}
+
+.hidden { display: none; }
+
+/* Flotantes */
+.float {
+  position: absolute;
+  bottom: -20px;
+  animation: float 6s infinite;
+  opacity: 0.7;
+}
+
+@keyframes float {
+  from { transform: translateY(0); opacity: 0.7; }
+  to { transform: translateY(-120vh); opacity: 0; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(25px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(255,111,165,0.6); }
+  70% { box-shadow: 0 0 0 16px rgba(255,111,165,0); }
+  100% { box-shadow: 0 0 0 0 rgba(255,111,165,0); }
+}
+</style>
+</head>
+
+<body>
+
+<div class="overlay"></div>
+
+<div class="card">
+  <!-- PASO 1 -->
+  <div id="step1">
+    <h2>💖 Bienvenida 💖</h2>
+    <p>Escribe tu nombre 🌷</p>
+    <input id="nombre">
+    <button onclick="continuar()">Continuar ✨</button>
+  </div>
+
+  <!-- PASO 2 -->
+  <div id="step2" class="hidden">
+    <h2 id="saludo"></h2>
+    <p>¿Cómo te sientes hoy?</p>
+    <button onclick="responder('bien')">😊 Bien</button>
+    <button onclick="responder('normal')">😌 Tranquilo/a</button>
+    <button onclick="responder('cansado')">💭 Cansado/a</button>
+  </div>
+
+  <!-- PASO 3 -->
+  <div id="step3" class="hidden">
+    <h2>✨ Para Ti ✨</h2>
+    <p id="mensaje"></p>
+    <button id="btnExtra" class="hidden" onclick="pantallaExtra()">💌 Ver algo especial</button>
+    <button onclick="toggleMusic()">🎵 Música</button>
+    <button id="btnReiniciarStep3" class="hidden" onclick="reiniciar()">🔁 Volver a empezar</button>
+  </div>
+
+  <!-- PASO 4 SOLO A -->
+  <div id="step4" class="hidden">
+    <h2>💖 Solo para Ti 💖</h2>
+    <p id="mensajeEspecial"></p>
+    <button onclick="reiniciar()">🔁 Volver a empezar</button>
+  </div>
+</div>
+
+<audio id="musica" loop>
+  <source src="musica.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+let nombre="", tipo="";
+const musica = document.getElementById("musica");
+
+function hora() {
+  const h = new Date().getHours();
+  if (h < 12) return "esta mañana";
+  if (h < 18) return "esta tarde";
+  return "esta noche";
+}
+
+function continuar() {
+  nombre = document.getElementById("nombre").value.trim();
+  if (!nombre) return;
+
+  const n = nombre.toLowerCase();
+  if (n === "a") tipo = "A";
+  else if (n === "b") tipo = "B";
+  else if (n === "c") tipo = "C";
+  else tipo = "OTRO";
+
+  document.getElementById("step1").classList.add("hidden");
+
+  if (tipo === "OTRO") {
+    document.body.style.backgroundImage = "url('fondoDefault.jpg')";
+    document.getElementById("step3").classList.remove("hidden");
+    document.getElementById("mensaje").innerHTML =
+      "Mucho gusto, <b>"+nombre+"</b> 🌷<br>Que tengas un bonito día ✨";
+      document.getElementById("btnReiniciarStep3").classList.remove("hidden");
+      document.getElementById("btnExtra").classList.add("hidden");
+    return;
+  }
+
+  document.body.style.backgroundImage = "url('fondo" +tipo+ ".jpg')";
+  document.getElementById("step2").classList.remove("hidden");
+  document.getElementById("saludo").innerHTML = "Hola" +nombre+ "💕";
+  musica.play();
+  flotantes(tipo === "A" ? "💖" : "✨", tipo === "A" ? 20 : 10);
+}
+
+function responder(estado) {
+  let texto = "";
+
+  if (tipo === "A") {
+    texto =
+      "Me encanta verte aquí 💖<br><br>"+
+       "Que " +hora()+ " sea suave, bonita y llena de momentos lindos ✨<br><br>"+
+       "Tu presencia hace que todo se sienta un poco mejor 🌷";
+    document.getElementById("btnExtra").classList.remove("hidden");
+    document.getElementById("btnExtra").classList.add("special");
+    document.getElementById("btnReiniciarStep3").classList.add("hidden");
+  }
+
+  if (tipo === "B") {
+    texto = "Gracias por compartir este momento 💕<br>"+"Que " +hora()+ "te regale calma 🌷";
+    document.getElementById("btnReiniciarStep3").classList.remove("hidden");
+    document.getElementById("btnExtra").classList.add("hidden");
+  }
+
+  if (tipo === "C") {
+    texto = "Este mensaje es para ti 💖<br>"+"Que" +hora()+ "te abrace bonito 🌈";
+    document.getElementById("btnReiniciarStep3").classList.remove("hidden");
+    document.getElementById("btnExtra").classList.add("hidden");
+  }
+
+  document.getElementById("step2").classList.add("hidden");
+  document.getElementById("step3").classList.remove("hidden");
+  escribirTexto("mensaje", texto);
+}
+
+function pantallaExtra() {
+  document.getElementById("step3").classList.add("hidden");
+  document.getElementById("step4").classList.remove("hidden");
+
+  escribirTexto(
+    "mensajeEspecial",
+    `Solo quería que supieras algo 💖<br><br>
+     Este detalle existe porque alguien pensó en ti con mucho cariño 🌸<br><br>
+     Gracias por ser tú ✨`
+  );
+
+  flotantes("💫", 25);
+}
+
+function escribirTexto(id, texto) {
+  const el = document.getElementById(id);
+  el.innerHTML = "";
+  let i = 0;
+  const plain = texto.replace(/<br>/g, "\n");
+
+  const interval = setInterval(() => {
+    el.innerHTML = plain.substring(0, i).replace(/\n/g, "<br>");
+    i++;
+    if (i > plain.length) clearInterval(interval);
+  }, 35);
+}
+
+function flotantes(simbolo, cantidad) {
+  for (let i = 0; i < cantidad; i++) {
+    const f = document.createElement("div");
+    f.className = "float";
+    f.innerHTML = simbolo;
+    f.style.left = Math.random() * 100 + "vw";
+    f.style.fontSize = (14 + Math.random() * 20) + "px";
+    f.style.animationDuration = (4 + Math.random() * 4) + "s";
+    document.body.appendChild(f);
+  }
+}
+
+function toggleMusic() {
+  musica.paused ? musica.play() : musica.pause();
+}
+
+function reiniciar() {
+  // Reset variables
+  nombre = "";
+  tipo = "";
+
+  // Detener música
+  musica.pause();
+  musica.currentTime = 0;
+
+  // Limpiar textos
+  document.getElementById("nombre").value = "";
+  document.getElementById("mensaje").innerHTML = "";
+  document.getElementById("mensajeEspecial").innerHTML = "";
+
+  // Ocultar pantallas
+  document.getElementById("step2").classList.add("hidden");
+  document.getElementById("step3").classList.add("hidden");
+  document.getElementById("step4").classList.add("hidden");
+
+  // Mostrar inicio
+  document.getElementById("step1").classList.remove("hidden");
+
+  // Reset botones especiales
+  document.getElementById("btnExtra").classList.add("hidden");
+  document.getElementById("btnExtra").classList.remove("special");
+
+  // Reset fondo
+  document.body.style.backgroundImage = "";
+
+  // Eliminar flotantes
+  document.querySelectorAll(".float").forEach(e => e.remove());
+}
+
+</script>
+
+</body>
+</html>
