@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Para Ti 💖</title>
+<title>For You 🌷</title>
 
 <style>
+* { box-sizing: border-box; }
+
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
@@ -87,6 +89,57 @@ button.special {
   70% { box-shadow: 0 0 0 16px rgba(255,111,165,0); }
   100% { box-shadow: 0 0 0 0 rgba(255,111,165,0); }
 }
+
+.nombre-letra {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(20px) scale(0.8);
+  animation: letraBounce 0.65s forwards;
+  color: #ff5fa2;
+  font-weight: 600;
+  text-shadow: 0 0 8px rgba(255,95,162,0.45);
+}
+
+@keyframes letraBounce {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.8);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-5px) scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.encabezado-animado {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(30px) scale(0.8);
+  animation: encabezadoBounce 0.8s forwards;
+  margin-right: 2px; /* espacio entre letras/emojis */
+}
+
+@keyframes encabezadoBounce {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-8px) scale(1.1);
+  }
+  80% {
+    transform: translateY(2px) scale(1);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
 </style>
 </head>
 
@@ -97,45 +150,57 @@ button.special {
 <div class="card">
   <!-- PASO 1 -->
   <div id="step1">
-    <h2>💖 Bienvenida 💖</h2>
+    <h2 id="step1-h2"></h2>
     <p>Escribe tu nombre 🌷</p>
-    <input id="nombre">
+    <input id="nombre" placeholder="Escribe tu nombre aqui"/>
     <button onclick="continuar()">Continuar ✨</button>
   </div>
 
   <!-- PASO 2 -->
   <div id="step2" class="hidden">
-    <h2 id="saludo"></h2>
+    <h2 id="saludo"><span id="nombreAnimado"></span></h2>
     <p>¿Cómo te sientes hoy?</p>
-    <button onclick="responder('bien')">😊 Bien</button>
-    <button onclick="responder('normal')">😌 Tranquilo/a</button>
-    <button onclick="responder('cansado')">💭 Cansado/a</button>
+    <button onclick="responder('bien')">😜 Muy bien</button>
+    <button onclick="responder('normal')">😊 Tranquila</button>
+    <button onclick="responder('cansada')">💭 Cansada</button>
   </div>
 
   <!-- PASO 3 -->
   <div id="step3" class="hidden">
-    <h2>✨ Para Ti ✨</h2>
+    <h2 id="step3-h2"></h2>
     <p id="mensaje"></p>
     <button id="btnExtra" class="hidden" onclick="pantallaExtra()">💌 Ver algo especial</button>
     <button onclick="toggleMusic()">🎵 Música</button>
     <button id="btnReiniciarStep3" class="hidden" onclick="reiniciar()">🔁 Volver a empezar</button>
   </div>
 
-  <!-- PASO 4 SOLO A -->
+  <!-- PASO 4 -->
   <div id="step4" class="hidden">
-    <h2>💖 Solo para Ti 💖</h2>
+    <h2 id="step4-h2"></h2>
     <p id="mensajeEspecial"></p>
+    <button id="btnExtra1" class="hidden" onclick="pantallaExtra1()">💌 Ver otro algo especial</button>
+    <button onclick="toggleMusic()">🎵 Música</button>
+  </div>
+
+  <!-- PASO 5 -->
+  <div id="step5" class="hidden">
+    <h2 id="step5-h2"></h2>
+    <p id="mensajeEspecial1"></p>
+    <button onclick="toggleMusic()">🎵 Música</button>
     <button onclick="reiniciar()">🔁 Volver a empezar</button>
   </div>
 </div>
 
 <audio id="musica" loop>
-  <source src="musica.mp3" type="audio/mpeg">
+
 </audio>
 
 <script>
 let nombre="", tipo="";
 const musica = document.getElementById("musica");
+
+// Animaciones iniciales
+animarEncabezado("step1-h2", "🤗 Bienvenida 🤗", 100);
 
 function hora() {
   const h = new Date().getHours();
@@ -144,90 +209,281 @@ function hora() {
   return "esta noche";
 }
 
+function setMusicaPorTipo(tipo) {
+  musica.pause();
+  musica.currentTime = 0;
+
+  let src = "";
+
+  if (tipo === "A") src = "musicaA.mp3";
+  else if (tipo === "B") src = "musicaB.mp3";
+  else if (tipo === "C") src = "musicaC.mp3";
+  else src = "musicaDefault.mp3";
+
+  musica.src = src;
+  musica.load();
+}
+
+function toggleMusic() { musica.paused ? musica.play() : musica.pause(); }
+
+
 function continuar() {
   nombre = document.getElementById("nombre").value.trim();
   if (!nombre) return;
 
   const n = nombre.toLowerCase();
-  if (n === "a") tipo = "A";
-  else if (n === "b") tipo = "B";
-  else if (n === "c") tipo = "C";
+  if (n === "bella julissa") tipo = "A";
+  else if (n === "danika") tipo = "B";
+  else if (n === "tatiana") tipo = "C";
   else tipo = "OTRO";
+
+  setMusicaPorTipo(tipo);
+  musica.play();
 
   document.getElementById("step1").classList.add("hidden");
 
   if (tipo === "OTRO") {
-    document.body.style.backgroundImage = "url('fondoDefault.jpg')";
-    document.getElementById("step3").classList.remove("hidden");
-    document.getElementById("mensaje").innerHTML =
-      "Mucho gusto, <b>"+nombre+"</b> 🌷<br>Que tengas un bonito día ✨";
-      document.getElementById("btnReiniciarStep3").classList.remove("hidden");
-      document.getElementById("btnExtra").classList.add("hidden");
-    return;
-  }
+  document.body.style.backgroundImage = "url('fondoDefault.jpg')";
+  document.getElementById("step3").classList.remove("hidden");
 
-  document.body.style.backgroundImage = "url('fondo" +tipo+ ".jpg')";
-  document.getElementById("step2").classList.remove("hidden");
-  document.getElementById("saludo").innerHTML = "Hola" +nombre+ "💕";
-  musica.play();
-  flotantes(tipo === "A" ? "💖" : "✨", tipo === "A" ? 20 : 10);
+
+  const durEncabezado = animarEncabezado("step3-h2", "✨ Para Ti ✨");
+
+  setTimeout(() => {
+    const mensajeEl = document.getElementById("mensaje");
+    mensajeEl.innerHTML = ""; // Limpiar contenido
+
+    // Línea 1: Mucho gusto, [nombre] 🖖
+    const linea1 = document.createElement("div");
+    linea1.id = "linea1";
+    mensajeEl.appendChild(linea1);
+
+    // Animar "Mucho gusto, "
+    escribirTextoInline(linea1, "Mucho gusto, ", 60, () => {
+  const nombreSpan = document.createElement("span");
+  nombreSpan.id = "nombrePaso3";
+  linea1.appendChild(nombreSpan);
+
+  const emojiSpan = document.createElement("span");
+  emojiSpan.textContent = " 🖖";
+  linea1.appendChild(emojiSpan);
+
+  animarNombre("nombrePaso3", nombre);
+  // Después del nombre → líneas 2 y 3
+  const durNombre = nombre.length * 240 + 750;
+
+  setTimeout(() => {
+    const mensajeLineas = document.createElement("div");
+    mensajeLineas.id = "mensajeLinea2";
+    mensajeLineas.style.lineHeight = "1.8em";
+    mensajeEl.appendChild(mensajeLineas);
+
+    escribirTexto(
+      "mensajeLinea2",
+      "Espero te encuentres bien 🫡\nQue tengas un bonito día ✨",
+      50
+    );
+  }, durNombre);
+});
+
+  }, durEncabezado);
+
+  document.getElementById("btnReiniciarStep3").classList.remove("hidden");
+  document.getElementById("btnExtra").classList.add("hidden");
+  return;
 }
+
+
+
+  // Pasos A, B, C
+  document.body.style.backgroundImage = "url('fondo" + tipo + ".jpg')";
+  document.getElementById("step2").classList.remove("hidden");
+  animarNombre("nombreAnimado", nombre + " 🌷");
+  musica.play();
+  flotantes(tipo === "A" ? "💖" : "✨", tipo === "A" ? 20 : 20);
+}
+
+
+function escribirTextoInline(el, texto, velocidad = 60, callback) {
+  let i = 0;
+  function escribir() {
+    if (i < texto.length) {
+      el.textContent += texto[i];
+      i++;
+      setTimeout(escribir, velocidad);
+    } else if (callback) {
+      callback();
+    }
+  }
+  escribir();
+}
+
+
+// Función auxiliar para saltos de línea animados
+function escribirTextoConSaltos(contenedor, texto, velocidad = 50) {
+  let i = 0;
+  const plain = texto.replace(/\n/g, "\n");
+
+  const interval = setInterval(() => {
+    const char = plain[i];
+    if (char === "\n") {
+      contenedor.innerHTML += "<br>";
+    } else {
+      contenedor.innerHTML += char;
+    }
+    i++;
+    if (i >= plain.length) clearInterval(interval);
+  }, velocidad);
+}
+
+
 
 function responder(estado) {
   let texto = "";
 
   if (tipo === "A") {
-    texto =
-      "Me encanta verte aquí 💖<br><br>"+
-       "Que " +hora()+ " sea suave, bonita y llena de momentos lindos ✨<br><br>"+
-       "Tu presencia hace que todo se sienta un poco mejor 🌷";
+    if (estado === "bien")
+      texto = "Me alegra saber que te sientes muy bien 💖"+
+              "Quiero decirte que contigo " +hora()+ " se vuelve mas bonita y especial 💕"+
+              "Tu presencia hace que todo se sienta mejor! 🌷";
+    else if (estado === "normal")
+      texto = "Gracias por decirme que te sientes tranquila 💕 Que este dia esté lleno de calma y sonrisas para ti! 🌷";
+    else
+      texto = "Te mando un abrazo bonito 🤗 Todo puede mejorar! ✌️";
+
     document.getElementById("btnExtra").classList.remove("hidden");
     document.getElementById("btnExtra").classList.add("special");
     document.getElementById("btnReiniciarStep3").classList.add("hidden");
   }
 
   if (tipo === "B") {
-    texto = "Gracias por compartir este momento 💕<br>"+"Que " +hora()+ "te regale calma 🌷";
+    if (estado === "bien")
+    texto = "Este mensaje es para ti 🌷 Gracias por compartir cómo te sientes en este momento 🤗 Que " +hora()+ " te regale alegría y felicidad! 😃";
+    else if (estado === "normal")
+      texto = "Gracias por decirlo 💕La tranquilidad tambien es muy valiosa, asi como tú! 🌷";
+    else
+      texto = "Tómate tu tiempo 🤗 Todo pasa y lo bueno llega, ya lo verás! ✌️";
+
     document.getElementById("btnReiniciarStep3").classList.remove("hidden");
     document.getElementById("btnExtra").classList.add("hidden");
   }
 
   if (tipo === "C") {
-    texto = "Este mensaje es para ti 💖<br>"+"Que" +hora()+ "te abrace bonito 🌈";
+    if (estado === "bien")
+    texto = "Este mensaje es para ti 🌷 Gracias por compartir cómo te sientes en este momento 🤗 Que " +hora()+ " te regale alegria y felicidad! 😃";
+    else if (estado === "normal")
+      texto = "Esta bien sentirse así 💕 Disfruta los buenos momentos, con tranquilidad! 🌷";
+    else
+      texto = "Este mensaje es para ti 🤗 No estas sola ✌️";
+
     document.getElementById("btnReiniciarStep3").classList.remove("hidden");
     document.getElementById("btnExtra").classList.add("hidden");
   }
 
   document.getElementById("step2").classList.add("hidden");
   document.getElementById("step3").classList.remove("hidden");
-  escribirTexto("mensaje", texto);
+
+  // Primero encabezado, luego texto
+  const dur = animarEncabezado("step3-h2", "✨ Sabes algo?... ✨");
+  setTimeout(() => escribirTexto("mensaje", texto), dur);
 }
 
 function pantallaExtra() {
   document.getElementById("step3").classList.add("hidden");
   document.getElementById("step4").classList.remove("hidden");
+  document.getElementById("btnExtra1").classList.remove("hidden");
 
-  escribirTexto(
-    "mensajeEspecial",
-    `Solo quería que supieras algo 💖<br><br>
-     Este detalle existe porque alguien pensó en ti con mucho cariño 🌸<br><br>
-     Gracias por ser tú ✨`
-  );
+  const dur = animarEncabezado("step4-h2", "💖 Solo para Ti 💕");
+  setTimeout(() => {
+    escribirTexto("mensajeEspecial",
+      `Quiero que sepas algo 💖
+       Este detalle existe porque pensé en ti con mucho cariño 🌻🌼
+       Gracias por ser como eres! 🤗`);
+  }, dur);
 
   flotantes("💫", 25);
 }
 
-function escribirTexto(id, texto) {
+function pantallaExtra1() {
+  document.getElementById("step4").classList.add("hidden");
+  document.getElementById("step5").classList.remove("hidden");
+
+  const dur = animarEncabezado("step5-h2", "💖 Y ahora que te parece si... 💕");
+  setTimeout(() => {
+    escribirTexto("mensajeEspecial1",
+      `Vamos por un helado?... 🍦 
+       O prefieres que vayamos por una chela bien helena? Jeje 😉 
+       Qué dices? Vamos!!! Salud, salud! 🍻
+       🤗🤗🤗`);
+  }, dur);
+
+  flotantes("💫", 25);
+}
+
+// ---- FUNCIONES DE ANIMACIÓN ----
+
+function escribirTexto(id, texto, velocidad = 80) {
   const el = document.getElementById(id);
   el.innerHTML = "";
-  let i = 0;
-  const plain = texto.replace(/<br>/g, "\n");
+  el.style.lineHeight = "1.8em"; // espaciado uniforme entre líneas
 
-  const interval = setInterval(() => {
-    el.innerHTML = plain.substring(0, i).replace(/\n/g, "<br>");
-    i++;
-    if (i > plain.length) clearInterval(interval);
-  }, 35);
+  const lineas = texto.split("\n"); // separamos el texto por saltos de línea
+
+  let lineaIndex = 0, charIndex = 0;
+
+  function escribirLetra() {
+    if (lineaIndex >= lineas.length) return;
+
+    const linea = lineas[lineaIndex];
+
+    // Creamos un div por línea si no existe
+    if (!el.children[lineaIndex]) {
+      const div = document.createElement("div");
+      el.appendChild(div);
+    }
+
+    // Agregamos la letra actual
+    el.children[lineaIndex].textContent += linea[charIndex];
+    charIndex++;
+
+    if (charIndex >= linea.length) {
+      lineaIndex++;
+      charIndex = 0;
+    }
+
+    if (lineaIndex < lineas.length || charIndex < (lineas[lineaIndex]?.length || 0)) {
+      setTimeout(escribirLetra, velocidad);
+    }
+  }
+
+  escribirLetra();
+}
+
+
+function animarNombre(id, nombre) {
+  const el = document.getElementById(id);
+  el.innerHTML = "";
+  [...nombre].forEach((letra, i) => {
+    const span = document.createElement("span");
+    span.className = "nombre-letra";
+    span.style.animationDelay = (i * 0.14) + "s";
+    span.textContent = letra === " " ? "\u00A0" : letra;
+    el.appendChild(span);
+  });
+}
+
+function animarEncabezado(id, texto) {
+  const el = document.getElementById(id);
+  el.innerHTML = "";
+  const chars = Array.from(texto); // importante para emojis
+  chars.forEach((char, i) => {
+    const span = document.createElement("span");
+    span.className = "encabezado-animado";
+    span.textContent = char === " " ? "\u00A0" : char;
+    span.style.animationDelay = `${i * 60}ms`;
+    el.appendChild(span);
+  });
+  return chars.length * 60 + 800; // duración total
 }
 
 function flotantes(simbolo, cantidad) {
@@ -242,40 +498,18 @@ function flotantes(simbolo, cantidad) {
   }
 }
 
-function toggleMusic() {
-  musica.paused ? musica.play() : musica.pause();
-}
 
 function reiniciar() {
-  // Reset variables
   nombre = "";
   tipo = "";
-
-  // Detener música
-  musica.pause();
-  musica.currentTime = 0;
-
-  // Limpiar textos
+  musica.pause(); musica.currentTime = 0;
   document.getElementById("nombre").value = "";
-  document.getElementById("mensaje").innerHTML = "";
-  document.getElementById("mensajeEspecial").innerHTML = "";
-
-  // Ocultar pantallas
-  document.getElementById("step2").classList.add("hidden");
-  document.getElementById("step3").classList.add("hidden");
-  document.getElementById("step4").classList.add("hidden");
-
-  // Mostrar inicio
+  ["mensaje","mensajeEspecial","mensajeEspecial1"].forEach(id => document.getElementById(id).innerHTML = "");
+  ["step2","step3","step4","step5"].forEach(id => document.getElementById(id).classList.add("hidden"));
   document.getElementById("step1").classList.remove("hidden");
-
-  // Reset botones especiales
-  document.getElementById("btnExtra").classList.add("hidden");
-  document.getElementById("btnExtra").classList.remove("special");
-
-  // Reset fondo
+  document.getElementById("btnExtra").classList.add("hidden"); document.getElementById("btnExtra").classList.remove("special");
+  document.getElementById("btnExtra1").classList.add("hidden");
   document.body.style.backgroundImage = "";
-
-  // Eliminar flotantes
   document.querySelectorAll(".float").forEach(e => e.remove());
 }
 
