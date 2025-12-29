@@ -343,13 +343,13 @@ function responder(estado) {
 
   if (tipo === "A") {
     if (estado === "bien")
-      texto = "Me alegra saber que te sientes muy bien 💖"+
-              "Quiero decirte que contigo " +hora()+ " se vuelve mas bonita y especial 💕"+
+      texto = "Me alegra saber que te sientes muy bien 💖 "+
+              "Quiero decirte que contigo " +hora()+ " se vuelve más bonita y especial 💕 "+
               "Tu presencia hace que todo se sienta mejor! 🌷";
     else if (estado === "normal")
-      texto = "Gracias por decirme que te sientes tranquila 💕 Que este dia esté lleno de calma y sonrisas para ti! 🌷";
+      texto = "Gracias por decirme que te sientes tranquila 💕 Que este dia esté lleno de calma, alegría y sonrisas para ti! 🌷";
     else
-      texto = "Te mando un abrazo bonito 🤗 Todo puede mejorar! ✌️";
+      texto = "Te mando un abrazo bonito 🤗 Todo puede mejorar ✌️ Sobretodo si mantienes tu linda sonrisa! 😁";
 
     document.getElementById("btnExtra").classList.remove("hidden");
     document.getElementById("btnExtra").classList.add("special");
@@ -374,7 +374,7 @@ function responder(estado) {
     else if (estado === "normal")
       texto = "Esta bien sentirse así 💕 Disfruta los buenos momentos, con tranquilidad! 🌷";
     else
-      texto = "Este mensaje es para ti 🤗 No estas sola ✌️";
+      texto = "Este mensaje es para ti 🤗 No estas sola! ✌️";
 
     document.getElementById("btnReiniciarStep3").classList.remove("hidden");
     document.getElementById("btnExtra").classList.add("hidden");
@@ -398,7 +398,7 @@ function pantallaExtra() {
     escribirTexto("mensajeEspecial",
       `Quiero que sepas algo 💖
        Este detalle existe porque pensé en ti con mucho cariño 🌻🌼
-       Gracias por ser como eres! 🤗`);
+       Gracias por existir! 🤗`);
   }, dur);
 
   flotantes("💫", 25);
